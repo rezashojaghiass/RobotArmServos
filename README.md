@@ -14,6 +14,59 @@ This project controls a humanoid robot featuring:
 ## Hardware Requirements
 
 ### Microcontroller
+
+### Dual Arduino Setup
+
+This project uses **two Arduino Mega 2560 boards** for distributed control:
+
+#### Arduino #1 - Fingers & Arms Control
+- **Port**: `/dev/ttyACM0` (Linux) or COM port (Windows)
+- **Type**: Official Arduino Mega 2560 R3
+- **USB Chip**: ATmega16U2
+- **Serial Number**: `343383235313515061E1`
+- **USB Path**: `1-2.2`
+- **Controls**: 10 finger servos + 6 arm servos (shoulders & elbows)
+- **Sketch**: `ArduinoServoControl.ino` or `AllServosFeb10.ino`
+
+#### Arduino #2 - Robot Base Control
+- **Port**: `/dev/ttyUSB1` (Linux) or COM port (Windows)
+- **Type**: Arduino Mega 2560 Clone
+- **USB Chip**: CH340/CH341
+- **USB Path**: `1-4.3`
+- **Controls**: 4 DC motors for omnidirectional movement
+- **Sketch**: `OmnidirectionalWheelControl.ino`
+
+#### Identifying Your Boards
+
+**By USB Path (Most Reliable):**
+```bash
+ls -l /dev/serial/by-path/
+# Arduino #1: *1-2.2*
+# Arduino #2: *1-4.3*
+```
+
+**By Port Type:**
+```bash
+ls /dev/ttyACM* /dev/ttyUSB*
+# Official boards: /dev/ttyACM0, /dev/ttyACM1
+# Clone boards: /dev/ttyUSB0, /dev/ttyUSB1
+```
+
+**By Serial Number:**
+```bash
+udevadm info -a -n /dev/ttyACM0 | grep ATTRS{serial}
+# Only official Arduino has unique serial number
+```
+
+**Upload to Specific Board:**
+```bash
+# Upload to Arduino #1 (Fingers & Arms)
+arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega /path/to/sketch
+
+# Upload to Arduino #2 (Base Control)
+arduino-cli upload -p /dev/ttyUSB1 --fqbn arduino:avr:mega /path/to/sketch
+```
+
 - **Arduino Mega 2560** (recommended due to pin count requirements)
 - Alternative: Arduino Due or similar board with sufficient PWM pins
 
