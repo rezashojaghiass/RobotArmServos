@@ -33,6 +33,7 @@ This project uses **two Arduino Mega 2560 boards** for distributed control:
 - **Type**: Arduino Mega 2560 Clone
 - **USB Chip**: CH340/CH341
 - **USB Path**: `1-4.3`
+- **Serial Number**: None (generic `1a86_USB_Serial`)
 - **Controls**: 4 DC motors for omnidirectional movement
 - **Sketch**: `OmnidirectionalWheelControl.ino`
 
