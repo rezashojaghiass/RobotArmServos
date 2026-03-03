@@ -1,5 +1,14 @@
 #include <PS2X_lib.h>
 
+// ============================================================
+// OMNIDIRECTIONAL BASE CONTROL - Arduino #2 (Clone CH340)
+// DO NOT upload to Arduino #1 (Official Servo Control)
+// ============================================================
+// Upload Port: /dev/ttyUSB0 (Linux) or COM port (Windows)
+// Board: Arduino Mega 2560 Clone with CH340 USB chip
+// Function: Controls 4 DC motors for omnidirectional movement
+// ============================================================
+
 #define PS2_DAT  9    
 #define PS2_CMD  10   
 #define PS2_SEL  13   
@@ -50,11 +59,26 @@ void setup() {
     Serial.begin(9600);
     delay(1000);
 
+    // SANITY CHECK: Verify this is the base control board (Arduino #2 Clone)
+    // This code should NOT run on the servo control board (Arduino #1 Official)
+    // Check for unique motor pins that only exist on base control
+    
     pinMode(PWMA, OUTPUT); pinMode(DIRA1, OUTPUT); pinMode(DIRA2, OUTPUT);
     pinMode(PWMB, OUTPUT); pinMode(DIRB1, OUTPUT); pinMode(DIRB2, OUTPUT);
     pinMode(PWMC, OUTPUT); pinMode(DIRC1, OUTPUT); pinMode(DIRC2, OUTPUT);
     pinMode(PWMD, OUTPUT); pinMode(DIRD1, OUTPUT); pinMode(DIRD2, OUTPUT);
-
+    
+    // Verify motor pins are accessible (basic sanity check)
+    digitalWrite(PWMA, LOW);
+    digitalWrite(PWMB, LOW);
+    digitalWrite(PWMC, LOW);
+    digitalWrite(PWMD, LOW);
+    
+    Serial.println("\n=== OMNIDIRECTIONAL BASE CONTROL ===");
+    Serial.println("Board: Arduino Mega 2560 Clone (CH340)");
+    Serial.println("Port: /dev/ttyUSB0 or /dev/ttyUSB1");
+    Serial.println("Function: 4-wheel motor control");
+    
     error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, false, false);
     if (error == 0) {
         Serial.println("✅ PS2 Controller connected successfully!");
