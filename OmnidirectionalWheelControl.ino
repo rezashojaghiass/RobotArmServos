@@ -8,6 +8,13 @@
 PS2X ps2x;
 int error = 0;
 
+// Speed tuning
+const int BASE_SPEED = 150;     // Max base speed (0-255)
+const float SPEED_RATIO = 0.1;  // 0.1 to 1.0
+const int RAMP_RATE = 1;        // Speed increase/decrease per loop (0-255)
+int currentSpeed = 0;           // Current motor speed
+int lastMotorA = 0, lastMotorB = 0, lastMotorC = 0, lastMotorD = 0;  // Last motor directions
+
 // Motor Pins
 #define PWMA 11
 #define DIRA1 34
@@ -65,54 +72,115 @@ void loop() {
     int LY = ps2x.Analog(PSS_LY) - 127;  // Forward/Backward
     int RX = ps2x.Analog(PSS_RX) - 127;  // Rotation
 
+    int driveSpeed = (int)(BASE_SPEED * SPEED_RATIO);
+    bool moving = false;
+
     if (LY < -20) {  // **Move Forward**
-        setMotor(PWMA, DIRA1, DIRA2, 150);  // A Forward
-        setMotor(PWMB, DIRB1, DIRB2, 150);  // B Forward
-        setMotor(PWMC, DIRC1, DIRC2, 150);  // C Forward
-        setMotor(PWMD, DIRD1, DIRD2, 150);  // D Forward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = currentSpeed;
+        lastMotorB = currentSpeed;
+        lastMotorC = currentSpeed;
+        lastMotorD = currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("⬆️ Moving Forward");
+        moving = true;
     } 
     else if (LY > 20) {  // **Move Backward**
-        setMotor(PWMA, DIRA1, DIRA2, -150);  // A Backward
-        setMotor(PWMB, DIRB1, DIRB2, -150);  // B Backward
-        setMotor(PWMC, DIRC1, DIRC2, -150);  // C Backward
-        setMotor(PWMD, DIRD1, DIRD2, -150);  // D Backward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = -currentSpeed;
+        lastMotorB = -currentSpeed;
+        lastMotorC = -currentSpeed;
+        lastMotorD = -currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("⬇️ Moving Backward");
+        moving = true;
     }
     else if (LX < -20) {  // **Strafe Left**
-        setMotor(PWMA, DIRA1, DIRA2, -150);  // A Backward
-        setMotor(PWMB, DIRB1, DIRB2, 150);   // B Forward
-        setMotor(PWMC, DIRC1, DIRC2, -150);  // C Backward
-        setMotor(PWMD, DIRD1, DIRD2, 150);   // D Forward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = -currentSpeed;
+        lastMotorB = currentSpeed;
+        lastMotorC = -currentSpeed;
+        lastMotorD = currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("⬅️ Strafing Left");
+        moving = true;
     } 
     else if (LX > 20) {  // **Strafe Right**
-        setMotor(PWMA, DIRA1, DIRA2, 150);   // A Forward
-        setMotor(PWMB, DIRB1, DIRB2, -150);  // B Backward
-        setMotor(PWMC, DIRC1, DIRC2, 150);   // C Forward
-        setMotor(PWMD, DIRD1, DIRD2, -150);  // D Backward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = currentSpeed;
+        lastMotorB = -currentSpeed;
+        lastMotorC = currentSpeed;
+        lastMotorD = -currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("➡️ Strafing Right");
+        moving = true;
     }
     else if (RX < -20) {  // **Rotate Left**
-        setMotor(PWMA, DIRA1, DIRA2, -150);  // A Backward
-        setMotor(PWMB, DIRB1, DIRB2, 150);   // B Forward
-        setMotor(PWMC, DIRC1, DIRC2, 150);   // C Forward
-        setMotor(PWMD, DIRD1, DIRD2, -150);  // D Backward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = -currentSpeed;
+        lastMotorB = currentSpeed;
+        lastMotorC = currentSpeed;
+        lastMotorD = -currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("↩️ Rotating Left");
+        moving = true;
     }
     else if (RX > 20) {  // **Rotate Right**
-        setMotor(PWMA, DIRA1, DIRA2, 150);   // A Forward
-        setMotor(PWMB, DIRB1, DIRB2, -150);  // B Backward
-        setMotor(PWMC, DIRC1, DIRC2, -150);  // C Backward
-        setMotor(PWMD, DIRD1, DIRD2, 150);   // D Forward
+        if (currentSpeed < driveSpeed) currentSpeed += RAMP_RATE;
+        if (currentSpeed > driveSpeed) currentSpeed = driveSpeed;
+        lastMotorA = currentSpeed;
+        lastMotorB = -currentSpeed;
+        lastMotorC = -currentSpeed;
+        lastMotorD = currentSpeed;
+        setMotor(PWMA, DIRA1, DIRA2, lastMotorA);
+        setMotor(PWMB, DIRB1, DIRB2, lastMotorB);
+        setMotor(PWMC, DIRC1, DIRC2, lastMotorC);
+        setMotor(PWMD, DIRD1, DIRD2, lastMotorD);
         Serial.println("↪️ Rotating Right");
+        moving = true;
     } 
-    else {
-        setMotor(PWMA, DIRA1, DIRA2, 0);
-        setMotor(PWMB, DIRB1, DIRB2, 0);
-        setMotor(PWMC, DIRC1, DIRC2, 0);
-        setMotor(PWMD, DIRD1, DIRD2, 0);
-        Serial.println("🛑 Stopped");
+    
+    // Gradually decelerate when stopped
+    if (!moving) {
+        if (currentSpeed > 0) {
+            currentSpeed -= RAMP_RATE;
+            if (currentSpeed < 0) currentSpeed = 0;
+            // Apply ramped-down speed in last direction
+            int scaledA = (lastMotorA > 0) ? currentSpeed : (lastMotorA < 0) ? -currentSpeed : 0;
+            int scaledB = (lastMotorB > 0) ? currentSpeed : (lastMotorB < 0) ? -currentSpeed : 0;
+            int scaledC = (lastMotorC > 0) ? currentSpeed : (lastMotorC < 0) ? -currentSpeed : 0;
+            int scaledD = (lastMotorD > 0) ? currentSpeed : (lastMotorD < 0) ? -currentSpeed : 0;
+            setMotor(PWMA, DIRA1, DIRA2, scaledA);
+            setMotor(PWMB, DIRB1, DIRB2, scaledB);
+            setMotor(PWMC, DIRC1, DIRC2, scaledC);
+            setMotor(PWMD, DIRD1, DIRD2, scaledD);
+        } else {
+            setMotor(PWMA, DIRA1, DIRA2, 0);
+            setMotor(PWMB, DIRB1, DIRB2, 0);
+            setMotor(PWMC, DIRC1, DIRC2, 0);
+            setMotor(PWMD, DIRD1, DIRD2, 0);
+            Serial.println("🛑 Stopped");
+        }
     }
 
     delay(100);
