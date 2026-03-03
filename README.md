@@ -2,6 +2,12 @@
 
 Arduino-based control system for a humanoid robot with dual articulated hands, arm movements, and omnidirectional wheel base.
 
+## Project Location
+
+- **Primary Workspace**: `/home/reza/RobotArmServos`
+- **Backup Workspace**: `/mnt/nvme/RobotArmServos`
+- **GitHub Repository**: https://github.com/rezashojaghiass/RobotArmServos
+
 ## Overview
 
 This project controls a humanoid robot featuring:
@@ -29,17 +35,33 @@ This project uses **two Arduino Mega 2560 boards** for distributed control:
 - **Sketch**: `ArduinoServoControl.ino` or `AllServosFeb10.ino`
 
 #### Arduino #2 - Robot Base Control
-- **Port**: `/dev/ttyUSB1` (Linux) or COM port (Windows)
+- **Port**: `/dev/ttyUSB0` (Linux) or COM port (Windows)
 - **Type**: Arduino Mega 2560 Clone
-- **USB Chip**: CH340/CH341
+- **USB Chip**: CH340 (Vendor ID: `1a86`, Product ID: `7523`)
 - **USB Path**: `1-4.3`
-- **Serial Number**: None (generic `1a86_USB_Serial`)
 - **Controls**: 4 DC motors for omnidirectional movement
 - **Sketch**: `OmnidirectionalWheelControl.ino`
+- **Current Features**: 
+  - Smooth acceleration/deceleration (RAMP_RATE = 1)
+  - Speed ratio control (SPEED_RATIO = 0.1 = 45 PWM)
+  - PS2 controller input for forward/backward/strafe/rotate
 
 #### Identifying Your Boards
 
-**By USB Path (Most Reliable):**
+**By USB Chip (Most Reliable - Device Name):**
+```bash
+# Check USB device info
+udevadm info -a -n /dev/ttyUSB0 | grep ATTRS{idProduct}
+# Arduino #1 (Official): idProduct == 0042 (ATmega16U2)
+# Arduino #2 (Clone): idProduct == 7523 (CH340)
+
+# Or use lsusb
+lsusb | grep Arduino
+# Arduino #1: 2341:0042 Arduino SA Mega 2560 R3
+# Arduino #2: 1a86:7523 (not in lsusb, but ID is CH340)
+```
+
+**By USB Path (Reliable but may change):**
 ```bash
 ls -l /dev/serial/by-path/
 # Arduino #1: *1-2.2*
@@ -49,26 +71,21 @@ ls -l /dev/serial/by-path/
 **By Port Type:**
 ```bash
 ls /dev/ttyACM* /dev/ttyUSB*
-# Official boards: /dev/ttyACM0, /dev/ttyACM1
-# Clone boards: /dev/ttyUSB0, /dev/ttyUSB1
-```
-
-**By Serial Number:**
-```bash
-udevadm info -a -n /dev/ttyACM0 | grep ATTRS{serial}
-# Only official Arduino has unique serial number
+# Arduino #1: /dev/ttyACM0
+# Arduino #2: /dev/ttyUSB0
 ```
 
 **Upload to Specific Board:**
 ```bash
-# Upload to Arduino #1 (Fingers & Arms)
+# Upload to Arduino #1 (Fingers & Arms) - Servo Control
 arduino-cli upload -p /dev/ttyACM0 --fqbn arduino:avr:mega /path/to/sketch
 
-# Upload to Arduino #2 (Base Control)
-arduino-cli upload -p /dev/ttyUSB1 --fqbn arduino:avr:mega /path/to/sketch
+# Upload to Arduino #2 (Base Control) - Motor Control
+arduino-cli upload -p /dev/ttyUSB0 --fqbn arduino:avr:mega /path/to/sketch
 ```
 
 - **Arduino Mega 2560** (recommended due to pin count requirements)
+
 - Alternative: Arduino Due or similar board with sufficient PWM pins
 
 ### Servos
