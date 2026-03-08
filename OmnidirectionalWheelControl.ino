@@ -19,8 +19,8 @@ int error = 0;
 
 // Speed tuning
 const int BASE_SPEED = 150;     // Max base speed (0-255)
-const float SPEED_RATIO = 0.1;  // 0.1 to 1.0
-const int RAMP_RATE = 1;        // Speed increase/decrease per loop (0-255)
+const float SPEED_RATIO = 0.2;  // 0.1 to 1.0
+const int RAMP_RATE = 100;      // Speed increase/decrease per loop (0-255)
 int currentSpeed = 0;           // Current motor speed
 int lastMotorA = 0, lastMotorB = 0, lastMotorC = 0, lastMotorD = 0;  // Last motor directions
 
