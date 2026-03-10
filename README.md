@@ -10,10 +10,10 @@ Arduino-based control system for a humanoid robot with dual articulated hands, a
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
-2. [Where to Find What](#-where-to-find-what)
+2. [Where to Find What](#where-to-find-what)
 3. [Hardware Requirements](#hardware-requirements)
 4. [Pin Mapping](#pin-mapping)
 5. [Software Requirements](#software-requirements)
@@ -24,11 +24,15 @@ Arduino-based control system for a humanoid robot with dual articulated hands, a
 10. [Troubleshooting](#troubleshooting)
 11. [Performance Optimization](#performance-optimization)
 12. [Safety Features](#safety-features)
-13. [Future Enhancements](#future-enhancements)
+13. [Example Sequences](#example-sequences)
+14. [Advanced Configuration](#advanced-configuration)
+15. [Future Enhancements](#future-enhancements)
+16. [References](#references)
+17. [License](#license)
 
 ---
 
-## 🗺 Where to Find What
+## Where to Find What
 
 | I want to… | Go to |
 |---|---|
