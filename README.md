@@ -8,6 +8,50 @@ Arduino-based control system for a humanoid robot with dual articulated hands, a
 - **Backup Workspace**: `/mnt/nvme/RobotArmServos`
 - **GitHub Repository**: https://github.com/rezashojaghiass/RobotArmServos
 
+---
+
+## 📖 Table of Contents
+
+1. [Overview](#overview)
+2. [Where to Find What](#-where-to-find-what)
+3. [Hardware Requirements](#hardware-requirements)
+4. [Pin Mapping](#pin-mapping)
+5. [Software Requirements](#software-requirements)
+6. [Project Files](#project-files)
+7. [Usage](#usage)
+8. [Calibration](#calibration)
+9. [Timing Configuration](#timing-configuration)
+10. [Troubleshooting](#troubleshooting)
+11. [Performance Optimization](#performance-optimization)
+12. [Safety Features](#safety-features)
+13. [Future Enhancements](#future-enhancements)
+
+---
+
+## 🗺 Where to Find What
+
+| I want to… | Go to |
+|---|---|
+| **Upload a sketch to the arm/finger board** | [`AllServosFeb10.ino`](AllServosFeb10.ino) or [`MainServoDirectControl/`](MainServoDirectControl/) |
+| **Test a single servo in isolation** | [`MainServoDirectControl/MainServoDirectControl.ino`](MainServoDirectControl/MainServoDirectControl.ino) |
+| **Control fingers only** | [`ArduinoServoControl.ino`](ArduinoServoControl.ino) or [`Humanoid/arduino/finger_servos/`](Humanoid/arduino/finger_servos/) |
+| **Control the wheel base** | [`OmnidirectionalWheelControl/`](OmnidirectionalWheelControl/) |
+| **Understand the software API / port design** | [`robot_sync_app/docs/API_CONTRACT.md`](robot_sync_app/docs/API_CONTRACT.md) |
+| **Run the robot_sync_app (main Python app)** | [`robot_sync_app/README.md`](robot_sync_app/README.md) |
+| **See all hardware pin assignments** | [`Humanoid/hardware/pinouts/PIN_MAPPING.md`](Humanoid/hardware/pinouts/PIN_MAPPING.md) |
+| **Calibrate servos** | [`Humanoid/hardware/calibration/CALIBRATION.md`](Humanoid/hardware/calibration/CALIBRATION.md) |
+| **Understand hardware specs** | [`Humanoid/hardware/specs/SPECIFICATIONS.md`](Humanoid/hardware/specs/SPECIFICATIONS.md) |
+| **Set up voice chat / Riva ASR+TTS** | [`Humanoid/references/chatbot_robot/VOICE_SETUP.md`](Humanoid/references/chatbot_robot/VOICE_SETUP.md) |
+| **Set up LiDAR (Unitree)** | [`Humanoid/references/lidar_unitree/LIDAR_ROS2_GUIDE.md`](Humanoid/references/lidar_unitree/LIDAR_ROS2_GUIDE.md) |
+| **Understand facial animation** | [`Humanoid/references/facial_animation/ANIMATION_SYSTEM.md`](Humanoid/references/facial_animation/ANIMATION_SYSTEM.md) |
+| **Set up remote display (VNC)** | [`Humanoid/references/vnc_setup/REMOTE_DISPLAY.md`](Humanoid/references/vnc_setup/REMOTE_DISPLAY.md) |
+| **See the full Humanoid integration guide** | [`Humanoid/docs/INTEGRATION.md`](Humanoid/docs/INTEGRATION.md) |
+| **Quick start the whole system** | [`Humanoid/QUICKSTART.md`](Humanoid/QUICKSTART.md) |
+| **Understand gesture examples** | [`Humanoid/examples/gesture_patterns/GESTURES.md`](Humanoid/examples/gesture_patterns/GESTURES.md) |
+| **PS2 library source** | [`PS2X_lib/`](PS2X_lib/) |
+
+---
+
 ## Overview
 
 This project controls a humanoid robot featuring:
