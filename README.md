@@ -26,9 +26,10 @@ Arduino-based control system for a humanoid robot with dual articulated hands, a
 12. [Safety Features](#safety-features)
 13. [Example Sequences](#example-sequences)
 14. [Advanced Configuration](#advanced-configuration)
-15. [Future Enhancements](#future-enhancements)
-16. [References](#references)
-17. [License](#license)
+15. [Gesture Serial Incident (Root Cause + Fix)](#gesture-serial-incident-root-cause--fix)
+16. [Future Enhancements](#future-enhancements)
+17. [References](#references)
+18. [License](#license)
 
 ---
 
@@ -558,6 +559,37 @@ int scaled = scaledPulse(NEUTRAL, TARGET, SPEED);
 // Speed=1.5 → 50% faster
 // Speed=0.5 → 50% slower
 ```
+
+## Gesture Serial Incident (Root Cause + Fix)
+
+### Symptom
+- During voice chat, gesture logs showed command send on the Python side, but the index finger did not move.
+
+### Root cause
+- Arduino did not reliably decode the live chat command line before motion dispatch.
+- Evidence from serial logs showed line-buffer resets (`Input guard reset line buffer`) without decode matches (`Matched ...`) or acknowledgements (`ACK TALK_ON`).
+- Because decode failed, `talking` never became `true`, so the finger motion loop was never entered.
+
+### Fix implemented
+- For `fingers_wave`, the Python adapter now sends short control frames (`TALK_ON` / `TALK_OFF`) instead of relying only on longer JSON.
+- Adapter delivery was hardened with:
+  - serial input flush before send,
+  - immediate write flush,
+  - retry once if no Arduino response is observed.
+- Arduino sketch was instrumented with byte-level receive/decode logs (raw byte value, line boundaries, trim/compact lengths, and decode branch logs).
+
+### Verification
+- Added diagnostic script: [`Humanoid/examples/test_scripts/test_talk_motion_serial.py`](Humanoid/examples/test_scripts/test_talk_motion_serial.py)
+- Added debug firmware path: [`Humanoid/arduino/finger_servos/talk_motion_serial.ino`](Humanoid/arduino/finger_servos/talk_motion_serial.ino)
+- Verified sequence in logs:
+  - sent bytes for `TALK_ON` and `TALK_OFF`,
+  - Arduino byte-by-byte receive logs,
+  - decode match (`Matched TALK_ON plain text` / `Matched TALK_OFF plain text`),
+  - ACKs (`ACK TALK_ON` / `ACK TALK_OFF`),
+  - index finger talk loop active only while speaking.
+
+### Current behavior
+- Voice mode now moves the right index finger during speech windows and stops/detaches on stop.
 
 ## Future Enhancements
 
